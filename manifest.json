@@ -1,6 +1,6 @@
 {
     "manifest_version": 2,
-    "name": "FX OSK",
+    "name": "FX OSK (\\n hardcoded)",
     "version": "1.11.0",
     "description": "On-Screen Keyboard for FireFox",
     "icons": {

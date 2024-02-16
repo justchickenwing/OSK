@@ -429,12 +429,15 @@ var fxKeyboard = {
                     fxKeyboard.focusElement.value = fxKeyboard.focusElement.value.slice(0, -1);
                     break;
                 case "Enter":
-                    fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("beforeinput", {"key": character, "shiftKey": false, "keyCode": (JSON.parse(FxKeyMap))[character]}));
-                    fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("keydown", {"key": character, "shiftKey": false, "code": character, "keyCode": (JSON.parse(FxKeyMap))[character]}));
-                    fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("keyup", {"key": character, "shiftKey": false, "code": character, "keyCode": (JSON.parse(FxKeyMap))[character]}));
-                    if (fxKeyboard.focusElement.parentNode.nodeName === 'FORM') {
-                        fxKeyboard.focusElement.parentNode.submit();
-                    }
+                    // fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("beforeinput", {"key": character, "shiftKey": false, "keyCode": (JSON.parse(FxKeyMap))[character]}));
+                    // fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("keydown", {"key": character, "shiftKey": false, "code": character, "keyCode": (JSON.parse(FxKeyMap))[character]}));
+                    // fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("keyup", {"key": character, "shiftKey": false, "code": character, "keyCode": (JSON.parse(FxKeyMap))[character]}));
+                    // if (fxKeyboard.focusElement.parentNode.nodeName === 'FORM') {
+                    //     fxKeyboard.focusElement.parentNode.submit();
+                    // }
+                    const area = document.getElementById('codearea');
+                    area.value += "\n";
+                    console.log(area);
                     break;
                 default:
                     fxKeyboard.focusElement.value = fxKeyboard.focusElement.value === null ? "" + character : fxKeyboard.focusElement.value + character;
