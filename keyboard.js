@@ -80,7 +80,7 @@ var FxKeyboardLocale = '{'+
             '["0", ")"],'+
             '["-", "_"],'+
             '["=", "+"],'+
-            '[{"label": "Delete", "special": 8, "flex": 10, "type": "repeat"}]'+ // backspace
+            '[{"label": "Löschen", "special": 8, "flex": 10, "type": "repeat"}]'+ // backspace
         '], ['+
             '[{"label": "Tab", "string": "\\t", "flex": 1}],'+ // TAB
             '["q", "Q"],'+
@@ -122,11 +122,9 @@ var FxKeyboardLocale = '{'+
             '[",", "<"],'+
             '[".", ">"],'+
             '["/", "?"],'+
-            '[{"label": "Close","special": "closeFX","flex": 10}]'+
+            '[{"label": "Schliessen","special": "closeFX","flex": 10}]'+
         '], ['+
-            '[{"label": "Space", "flex": 5, "special": 32}],'+ // space
-            '[{"label":".com", "flex": 1}],'+
-            '[{"label":".au", "flex": 1}]'+
+            '[{"label": "Leerzeichen", "flex": 5, "special": 32}]'+ // space
         ']]'+
 '}';
 
@@ -276,16 +274,16 @@ var fxKeyboard = {
 				kb.style.width = this.getMaxWidth(this.activeOSK) * this.settings.scale + "px";
 				kb.style.height = this.getMaxHeight(this.activeOSK) * this.settings.scale + "px";
 				kb.style.padding = this.settings.padding * this.settings.scale + "px";
-				kb.style.fontFamily = "arial,sans-serif";
-				kb.style.color = "#000000";
-				kb.style.fontSize = 35 * this.settings.scale + "px";
-				kb.style.borderRadius = 5 * this.settings.scale + "px";
+				kb.style.fontFamily = "Courier New, Courier, monospace";
+				kb.style.color = "rgb(202,118,75)";
+				kb.style.fontSize = 36 * this.settings.scale + "px";
+				kb.style.borderRadius = 24 * this.settings.scale + "px";
 				for (const element of kb.childNodes) {
 					for (const chNodes of element.childNodes) {
 						chNodes.style.width = this.settings.key_height * this.settings.scale + "px";
 						chNodes.style.height = this.settings.key_height * this.settings.scale + "px";
 						chNodes.style.margin = this.settings.padding * (this.settings.scale / 2) + "px";
-						chNodes.style.borderRadius = 5*this.settings.scale+"px";
+						chNodes.style.borderRadius = 12*this.settings.scale+"px";
 					}
 				}
                 // if ((((kb.getBoundingClientRect().top !== 0 ? this.focusElementYBottom : this.focusElementYTop) + window.scrollY) >
@@ -330,54 +328,65 @@ var fxKeyboard = {
     activeOSK: null,
     
     _setSpecialFunctions: function(keyD,obj) {
-        keyD.onmousedown = function(){keyD.style.backgroundColor = "rgb(150,150,150)";};
+        keyD.onmousedown = function(){
+            keyD.style.backgroundColor = "rgb(202,118,75)";
+            keyD.style.color = "rgb(250,250,250)";
+        };
         keyD.onmouseenter = function(){keyD.style.backgroundColor = "rgb(200,200,200)";};
-        keyD.onmouseout = function(){keyD.style.backgroundColor = "rgb(255,255,255)";};
+        keyD.onmouseout = function(){
+            keyD.style.backgroundColor = "rgb(250,250,250)";
+            keyD.style.color = "rgb(202,118,75)";
+        };
         
         if (obj.label === "Shift") {
             keyD.onmouseup = function(){
                 if (fxKeyboard.state === 0) {
-                    keyD.style.backgroundColor = "rgb(200,200,200)";
-                    keyD.onmouseout = function(){keyD.style.backgroundColor = "rgb(200,200,200)";};
+                    console.log("0")
+                    keyD.style.backgroundColor = "rgb(220,200,186)";
+                    keyD.style.color = "rgb(202,118,75)";
                     fxKeyboard.state++;
                 } else if (fxKeyboard.state === 1) {
-                    keyD.onmouseout = function(){keyD.style.backgroundColor = "rgb(150,150,150)";};
-                    keyD.style.backgroundColor = "rgb(150,150,150)";
+                    console.log("1")
+                    keyD.onmouseout = function(){keyD.style.backgroundColor = "rgb(202,118,75)";};
+                    keyD.style.backgroundColor = "rgb(202,118,75)";
                     fxKeyboard.state++;
                 } else if (fxKeyboard.state === 2) {
+                    console.log("2")
+                    keyD.style.backgroundColor = "rgb(200,200,200)";
+                    keyD.style.color = "rgb(202,118,75)";
                     fxKeyboard.state = 0;
                 } 
                 fxKeyboard._setShift();
             };
-        } else if (obj.label === "Delete") {
+        } else if (obj.label === "Löschen") {
             keyD.onmouseup = function () {
                 fxKeyboard._sendKey(obj.label);
-                keyD.style.backgroundColor = "rgb(255,255,255)";
+                keyD.style.backgroundColor = "rgb(250,250,250)";
             };
         } else if (obj.label in {"@":"",".com":"",".au":""}) {
             keyD.onmouseup = function () {
                 fxKeyboard._sendKey(obj.label);
-                keyD.style.backgroundColor = "rgb(255,255,255)";
+                keyD.style.backgroundColor = "rgb(250,250,250)";
             };
-        } else if (obj.label === "Space") {
+        } else if (obj.label === "Leerzeichen") {
             keyD.onmouseup = function () {
                 fxKeyboard._sendKey(" ");
-                keyD.style.backgroundColor = "rgb(255,255,255)";
+                keyD.style.backgroundColor = "rgb(250,250,250)";
             };
-        } else if (obj.label === "Close") {
+        } else if (obj.label === "Schliessen") {
             keyD.onmouseup = function () {
                 fxKeyboard._toggleOpen(false);
-                keyD.style.backgroundColor = "rgb(255,255,255)";
+                keyD.style.backgroundColor = "rgb(250,250,250)";
                 fxKeyboard.lastPress = "close";
             };
         } else if (obj.label === "Enter") {
             keyD.onmouseup = function () {
-                keyD.style.backgroundColor = "rgb(255,255,255)";
+                keyD.style.backgroundColor = "rgb(250,250,250)";
 				fxKeyboard._sendKey(obj.label);
             };
         } else if (obj.label === "Tab") {
 			keyD.onmouseup = function () {
-				keyD.style.backgroundColor = "rgb(255,255,255)";
+				keyD.style.backgroundColor = "rgb(250,250,250)";
 				var focussableElements = 'input:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
 				console.log(document.activeElement);
 				console.log(document.activeElement.form);
@@ -410,8 +419,8 @@ var fxKeyboard = {
             var secElements = document.getElementsByClassName("fxkey-secondary");
             var priElements = document.getElementsByClassName("fxkey-primary");
             var shiftK = document.getElementById("fxkey-shift");
-            shiftK.style.backgroundColor = "rgb(255,255,255)";
-            shiftK.onmouseout = function(){shiftK.style.backgroundColor = "rgb(255,255,255)";};
+            shiftK.style.backgroundColor = "rgb(250,250,250)";
+            shiftK.onmouseout = function(){shiftK.style.backgroundColor = "rgb(250,250,250)";};
             for (var i = 0; secElements.length > i; i++) {
                 secElements[i].style.display = "none";
             }
@@ -426,7 +435,7 @@ var fxKeyboard = {
             fxKeyboard.hierarchy.slavedIFrame.contentWindow.postMessage(JSON.stringify({"directive": "slave", "command": "sendKey", "key": character}), "*");
         } else {
             switch (character) {
-                case "Delete":
+                case "Löschen":
                     fxKeyboard.focusElement.value = fxKeyboard.focusElement.value.slice(0, -1);
                     break;
                 case "Enter":
@@ -475,15 +484,16 @@ var fxKeyboard = {
         key.style.justifyContent = "center";
         key.style.borderRadius = 5*this.settings.scale+"px";
         key.style.cursor = "pointer";
-        key.style.backgroundColor = "rgb(255,255,255)";
+        key.style.backgroundColor = "rgb(250,250,250)";
+        key.style.color = "rgb(202,118,75)";
         key.innerHTML = char;
-        key.onmouseenter = function(){key.style.backgroundColor = "rgb(200,200,200)";};
-        key.onmouseout = function(){key.style.backgroundColor = "rgb(255,255,255)";};
         key.onmousedown = function () {
-            key.style.backgroundColor = "rgb(150,150,150)";
+            key.style.backgroundColor = "rgb(202,118,75)";
+            key.style.color = "rgb(250,250,250)";
         };
         key.onmouseup = function () {
-            key.style.backgroundColor = "rgb(200,200,200)";
+            key.style.backgroundColor = "rgb(250,250,250)";
+            key.style.color = "rgb(202,118,75)";
             if (char.indexOf("&#") !== -1) {
                 char = key.innerHTML;
             }
@@ -515,13 +525,14 @@ var fxKeyboard = {
         key.style.borderRadius = 5*this.settings.scale+"px";
         key.style.cursor = "pointer";
 		key.style.flexGrow = flex;
-        key.style.backgroundColor = "rgb(255,255,255)";
+        key.style.backgroundColor = "rgb(250,250,250)";
         key.innerHTML = char;
 		console.log("FlexGrow of standard key is: "+key.style.flexGrow);
         key.onmouseenter = function(){key.style.backgroundColor = "rgb(200,200,200)";};
-        key.onmouseout = function(){key.style.backgroundColor = "rgb(255,255,255)";};
+        key.onmouseout = function(){key.style.backgroundColor = "rgb(250,250,250)";};
         key.onmousedown = function () {
-            key.style.backgroundColor = "rgb(150,150,150)";
+            key.style.backgroundColor = "rgb(202,118,75)";
+            key.style.accentColor= "rgb(250,250,250)";
         };
         key.onmouseup = function () {
             key.style.backgroundColor = "rgb(200,200,200)";
@@ -549,7 +560,7 @@ var fxKeyboard = {
         key.style.flexGrow = obj.flex;
         key.id = "fxkey-"+obj.label.toLowerCase();
         key.style.borderRadius = 5*this.settings.scale + "px";
-        key.style.backgroundColor = "rgb(255,255,255)";
+        key.style.backgroundColor = "rgb(250,250,250)";
         key = this._setSpecialFunctions(key,obj);
         key.innerHTML = obj.label;
         return key;
@@ -582,8 +593,8 @@ var fxKeyboard = {
         keyb.style.width = max_width*this.settings.scale + "px";
         keyb.style.height = max_height*this.settings.scale + "px";
         keyb.style.padding = this.settings.padding*this.settings.scale + "px";
-        keyb.style.fontFamily = "arial,sans-serif";
-        keyb.style.color = "#000000";
+        keyb.style.fontFamily = "Courier New, Courier, monospace";
+        keyb.style.color = "rgb(202,118,75)";
         keyb.style.fontSize = 35*this.settings.scale+"px";
         keyb.style.borderRadius = 5*this.settings.scale+"px";
         keyb.style.textAlign = "center";
