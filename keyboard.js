@@ -288,10 +288,11 @@ var fxKeyboard = {
 						chNodes.style.borderRadius = 5*this.settings.scale+"px";
 					}
 				}
-                if ((((kb.getBoundingClientRect().top !== 0 ? this.focusElementYBottom : this.focusElementYTop) + window.scrollY) > 
-                        ((kb.getBoundingClientRect().top !== 0 ? kb.getBoundingClientRect().top : kb.getBoundingClientRect().bottom) + window.scrollY))) {
-                    kb.style.top = 0;
-                } else if ((((kb.getBoundingClientRect().bottom !== window.innerHeight ? kb.getBoundingClientRect().bottom : kb.getBoundingClientRect().top) + window.scrollY) > 
+                // if ((((kb.getBoundingClientRect().top !== 0 ? this.focusElementYBottom : this.focusElementYTop) + window.scrollY) >
+                //         ((kb.getBoundingClientRect().top !== 0 ? kb.getBoundingClientRect().top : kb.getBoundingClientRect().bottom) + window.scrollY))) {
+                //     kb.style.top = 0;
+                // } else
+                    if ((((kb.getBoundingClientRect().bottom !== window.innerHeight ? kb.getBoundingClientRect().bottom : kb.getBoundingClientRect().top) + window.scrollY) >
                         ((kb.getBoundingClientRect().bottom !== window.innerHeight ? this.focusElementYTop : this.focusElementYBottom) + window.scrollY))) {
                     kb.style.bottom = 0;
                     kb.style.top = null;
