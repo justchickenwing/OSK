@@ -109,7 +109,7 @@ var FxKeyboardLocale = '{'+
             '["l", "L"],'+
             '[";", ":"],'+
             '["\'", "\\""],'+
-            '[{"label": "Enter", "flex": 15, "special": 13}]'+
+            '[{"label": "Enter", "flex": 15, "string": "\\t"}]'+
         '], ['+
             '[{"label": "Shift", "flex": 10, "special": "shift"}],'+
             '["z", "Z"],'+
@@ -332,11 +332,6 @@ var fxKeyboard = {
             keyD.style.backgroundColor = "rgb(202,118,75)";
             keyD.style.color = "rgb(250,250,250)";
         };
-        keyD.onmouseenter = function(){keyD.style.backgroundColor = "rgb(200,200,200)";};
-        keyD.onmouseout = function(){
-            keyD.style.backgroundColor = "rgb(250,250,250)";
-            keyD.style.color = "rgb(202,118,75)";
-        };
         
         if (obj.label === "Shift") {
             keyD.onmouseup = function(){
@@ -347,7 +342,6 @@ var fxKeyboard = {
                     fxKeyboard.state++;
                 } else if (fxKeyboard.state === 1) {
                     console.log("1")
-                    keyD.onmouseout = function(){keyD.style.backgroundColor = "rgb(202,118,75)";};
                     keyD.style.backgroundColor = "rgb(202,118,75)";
                     fxKeyboard.state++;
                 } else if (fxKeyboard.state === 2) {
@@ -360,17 +354,20 @@ var fxKeyboard = {
             };
         } else if (obj.label === "Löschen") {
             keyD.onmouseup = function () {
+                keyD.style.color = "rgb(202,118,75)";
                 fxKeyboard._sendKey(obj.label);
                 keyD.style.backgroundColor = "rgb(250,250,250)";
             };
         } else if (obj.label in {"@":"",".com":"",".au":""}) {
             keyD.onmouseup = function () {
+                keyD.style.color = "rgb(202,118,75)";
                 fxKeyboard._sendKey(obj.label);
                 keyD.style.backgroundColor = "rgb(250,250,250)";
             };
         } else if (obj.label === "Leerzeichen") {
             keyD.onmouseup = function () {
                 fxKeyboard._sendKey(" ");
+                keyD.style.color = "rgb(202,118,75)";
                 keyD.style.backgroundColor = "rgb(250,250,250)";
             };
         } else if (obj.label === "Schliessen") {
@@ -381,24 +378,15 @@ var fxKeyboard = {
             };
         } else if (obj.label === "Enter") {
             keyD.onmouseup = function () {
+                keyD.style.color = "rgb(202,118,75)";
                 keyD.style.backgroundColor = "rgb(250,250,250)";
 				fxKeyboard._sendKey(obj.label);
             };
         } else if (obj.label === "Tab") {
 			keyD.onmouseup = function () {
 				keyD.style.backgroundColor = "rgb(250,250,250)";
-				var focussableElements = 'input:not([disabled]), [tabindex]:not([disabled]):not([tabindex="-1"])';
-				console.log(document.activeElement);
-				console.log(document.activeElement.form);
-				if (document.activeElement && document.activeElement.form) {
-					var focussable = Array.prototype.filter.call(document.activeElement.form.querySelectorAll(focussableElements),
-							function (element) {
-								return element.offsetWidth > 0 || element.offsetHeight > 0 || element === document.activeElement
-							});
-					console.log(focussable);
-					var index = focussable.indexOf(document.activeElement);
-					focussable[index+1 >= focussable.length ?  0 : index+1].focus();
-				}
+                keyD.style.color = "rgb(202,118,75)";
+				fxKeyboard._sendKey(obj.label);
 			};
 		}
 			
@@ -420,7 +408,6 @@ var fxKeyboard = {
             var priElements = document.getElementsByClassName("fxkey-primary");
             var shiftK = document.getElementById("fxkey-shift");
             shiftK.style.backgroundColor = "rgb(250,250,250)";
-            shiftK.onmouseout = function(){shiftK.style.backgroundColor = "rgb(250,250,250)";};
             for (var i = 0; secElements.length > i; i++) {
                 secElements[i].style.display = "none";
             }
@@ -431,27 +418,35 @@ var fxKeyboard = {
     },
     
     _sendKey: function (character) {
+        const area = fxKeyboard.focusElement;
+        const cursorPosition = area.selectionStart;
+        const textBeforeCursor = area.value.substring(0, cursorPosition);
+        const textAfterCursor = area.value.substring(cursorPosition);
         if (fxKeyboard.hierarchy.isMaster && fxKeyboard.hierarchy.slavedIFrame != null) {
             fxKeyboard.hierarchy.slavedIFrame.contentWindow.postMessage(JSON.stringify({"directive": "slave", "command": "sendKey", "key": character}), "*");
         } else {
             switch (character) {
                 case "Löschen":
-                    fxKeyboard.focusElement.value = fxKeyboard.focusElement.value.slice(0, -1);
+                    const afterDelete = textBeforeCursor.slice(0, -1) + textAfterCursor;
+                    area.value = afterDelete;
+                    area.setSelectionRange(cursorPosition-1, cursorPosition-1);
                     break;
                 case "Enter":
-                    // fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("beforeinput", {"key": character, "shiftKey": false, "keyCode": (JSON.parse(FxKeyMap))[character]}));
-                    // fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("keydown", {"key": character, "shiftKey": false, "code": character, "keyCode": (JSON.parse(FxKeyMap))[character]}));
-                    // fxKeyboard.focusElement.dispatchEvent(new KeyboardEvent("keyup", {"key": character, "shiftKey": false, "code": character, "keyCode": (JSON.parse(FxKeyMap))[character]}));
-                    // if (fxKeyboard.focusElement.parentNode.nodeName === 'FORM') {
-                    //     fxKeyboard.focusElement.parentNode.submit();
-                    // }
-                    const area = document.getElementById('codearea');
-                    area.value += "\n";
+                    const afterEnter = textBeforeCursor + "\n" + textAfterCursor;
+                    area.value = afterEnter;
+                    area.setSelectionRange(cursorPosition + 1, cursorPosition + 1);
+                    console.log(area);
+                    break;
+                case "Tab":
+                    const afterTab = textBeforeCursor + "    " + textAfterCursor;
+                    area.value = afterTab;
+                    area.setSelectionRange(cursorPosition + 4, cursorPosition + 4);
                     console.log(area);
                     break;
                 default:
-                    fxKeyboard.focusElement.value = fxKeyboard.focusElement.value === null ? "" + character : fxKeyboard.focusElement.value + character;
-
+                    const afterInput = textBeforeCursor + character + textAfterCursor;
+                    area.value = afterInput;
+                    area.setSelectionRange(cursorPosition+1, cursorPosition+1);
                     if (fxKeyboard.state === 1) {
                         fxKeyboard.state = 0;
                         fxKeyboard._setShift();
@@ -528,14 +523,13 @@ var fxKeyboard = {
         key.style.backgroundColor = "rgb(250,250,250)";
         key.innerHTML = char;
 		console.log("FlexGrow of standard key is: "+key.style.flexGrow);
-        key.onmouseenter = function(){key.style.backgroundColor = "rgb(200,200,200)";};
-        key.onmouseout = function(){key.style.backgroundColor = "rgb(250,250,250)";};
         key.onmousedown = function () {
             key.style.backgroundColor = "rgb(202,118,75)";
             key.style.accentColor= "rgb(250,250,250)";
         };
         key.onmouseup = function () {
-            key.style.backgroundColor = "rgb(200,200,200)";
+            key.style.backgroundColor = "rgb(250,250,250)";
+            key.style.color = "rgb(202,118,75)";
             if (char.indexOf("&#") !== -1) {
                 char = key.innerHTML;
             }

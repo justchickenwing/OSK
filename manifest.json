@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "name": "FX OSK (\\n hardcoded, fixed to bottom)",
-    "version": "1.11.0",
+    "name": "FX OSK (plantoid fix)",
+    "version": "1.11.1",
     "description": "On-Screen Keyboard for FireFox",
     "icons": {
         "48": "icon.svg",
@@ -32,5 +32,11 @@
 	"options_ui": {
 		"page": "options/osk_settings.html",
         "browser_style": true
-	}
+	},
+
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "de@osk.ch"
+        }
+    }
 }

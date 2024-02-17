@@ -1,4 +1,9 @@
 # Firefox On Screen Keyboard (FX-OSK)
-An on screen keyboard for Firefox for those in a kiosk environment.
+Fork from this Repository by TravFitz: [OSK Keyboard](https://github.com/TravFitz/Firefox-On-Screen-Keyboard)  
 
-You can find the add-on at https://addons.mozilla.org/en-US/firefox/addon/fx-osk/ if you wish to download to your Firefox for testing purposes or if you wish to use it, any suggestions for upgrades will be accepted gratefully, I can incorporate and update to Firefox.
+# Changes
+- The keyboard is now anchored to the bottom of the window for better accessibility.
+- Fixed the malfunctioning 'Enter' key by implementing a hard-coded "\n" function.
+- Corrected the non-functional 'Tab' key by implementing a hard-coded "    " tabulation.
+- Resolved the issue where characters were appended at the end of the text value; now, they are inserted at the cursor position.
+- Applied styling enhancements for a more visually appealing interface.
