@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "FX OSK (plantoid fix)",
-    "version": "1.11.1",
+    "version": "1.11.3",
     "description": "On-Screen Keyboard for FireFox",
     "icons": {
         "48": "icon.svg",

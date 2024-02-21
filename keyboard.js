@@ -420,16 +420,21 @@ var fxKeyboard = {
     _sendKey: function (character) {
         const area = fxKeyboard.focusElement;
         const cursorPosition = area.selectionStart;
-        const textBeforeCursor = area.value.substring(0, cursorPosition);
-        const textAfterCursor = area.value.substring(cursorPosition);
+        const textBeforeCursor = area.value.substring(0, area.selectionStart);
+        const textAfterCursor = area.value.substring(area.selectionEnd);
+
         if (fxKeyboard.hierarchy.isMaster && fxKeyboard.hierarchy.slavedIFrame != null) {
             fxKeyboard.hierarchy.slavedIFrame.contentWindow.postMessage(JSON.stringify({"directive": "slave", "command": "sendKey", "key": character}), "*");
         } else {
             switch (character) {
                 case "Löschen":
-                    const afterDelete = textBeforeCursor.slice(0, -1) + textAfterCursor;
+                    const afterDelete = (area.selectionStart !== area.selectionEnd) ? (textBeforeCursor + textAfterCursor) : (textBeforeCursor.slice(0, -1) + textAfterCursor);
                     area.value = afterDelete;
-                    area.setSelectionRange(cursorPosition-1, cursorPosition-1);
+                    if (area.selectionStart !== area.selectionEnd) {
+                        area.setSelectionRange(cursorPosition, cursorPosition);
+                    } else {
+                        area.setSelectionRange(cursorPosition - 1, cursorPosition - 1);
+                    }
                     break;
                 case "Enter":
                     const afterEnter = textBeforeCursor + "\n" + textAfterCursor;
