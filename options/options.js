@@ -29,7 +29,7 @@ function updateStorage() {
  or the default settings if the stored settings are empty.
  */
 function updateUI(restoredSettings) {
-    scaleValue.value = restoredSettings.scaleValue || 90;
+    scaleValue.value = restoredSettings.scaleValue || 50;
     numpadState.value = restoredSettings.numpadState || "auto";
 }
 

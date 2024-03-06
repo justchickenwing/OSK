@@ -13,9 +13,9 @@ storageData.then(storedSetup, onError);
 function storedSetup(settings) {
 	if (!settings.hasOwnProperty("scaleValue") || settings.scaleValue === null) {
 		browser.storage.local.set({
-			scaleValue: 90,
+			scaleValue: 50,
 		});
-		settings.scaleValue = 90;
+		settings.scaleValue = 50;
 	}
 	if (!settings.hasOwnProperty("numpadState") || settings.numpadState === null) {
 		browser.storage.local.set({
