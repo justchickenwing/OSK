@@ -80,7 +80,7 @@ var FxKeyboardLocale = '{'+
             '["0", ")"],'+
             '["-", "_"],'+
             '["=", "+"],'+
-            '[{"label": "Löschen", "special": 8, "flex": 10, "type": "repeat"}]'+ // backspace
+            '[{"label": "←", "special": 8, "flex": 10, "type": "repeat"}]'+ // backspace
         '], ['+
             '[{"label": "Tab", "string": "\\t", "flex": 1}],'+ // TAB
             '["q", "Q"],'+
@@ -122,9 +122,9 @@ var FxKeyboardLocale = '{'+
             '[",", "<"],'+
             '[".", ">"],'+
             '["/", "?"],'+
-            '[{"label": "Schliessen","special": "closeFX","flex": 10}]'+
+            '[{"label": "Shift", "flex": 10, "special": "shift"}]'+
         '], ['+
-            '[{"label": "Leerzeichen", "flex": 5, "special": 32}]'+ // space
+            '[{"label": " ", "flex": 5, "special": 32}]'+ // space
         ']]'+
 '}';
 
@@ -134,15 +134,7 @@ FxKeyNumpad = JSON.stringify({
     "defaultFlex": "10",
     "main": [
         [
-            ["1"], ["2"], ["3"] 
-        ], [
-            ["4"], ["5"], ["6"]
-        ], [
-            ["7"], ["8"], ["9"]
-        ], [
-            ["0"], [{"label": "Delete", "special": 8, "flex": 1, "type": "repeat"}]
-        ], [
-            [{"label": "Close","special": "closeFX","flex": 1}]
+            ["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], [{"label": "←", "special": 8, "type": "repeat"}]
         ]
     ]
 });
@@ -236,8 +228,8 @@ var fxKeyboard = {
         padding: 8,
         kb_max_width: window.innerWidth,
         kb_max_height: window.innerWidth*0.30,
-        np_max_width: 220,
-        np_max_height: 375,
+        np_max_width: 1020,
+        np_max_height: 120,
 		key_height: window.innerWidth*0.05
     },
     
@@ -352,7 +344,7 @@ var fxKeyboard = {
                 } 
                 fxKeyboard._setShift();
             };
-        } else if (obj.label === "Löschen") {
+        } else if (obj.label === "←") {
             keyD.onmouseup = function () {
                 keyD.style.color = "rgb(202,118,75)";
                 fxKeyboard._sendKey(obj.label);
@@ -364,7 +356,7 @@ var fxKeyboard = {
                 fxKeyboard._sendKey(obj.label);
                 keyD.style.backgroundColor = "rgb(250,250,250)";
             };
-        } else if (obj.label === "Leerzeichen") {
+        } else if (obj.label === " ") {
             keyD.onmouseup = function () {
                 fxKeyboard._sendKey(" ");
                 keyD.style.color = "rgb(202,118,75)";
@@ -427,7 +419,7 @@ var fxKeyboard = {
             fxKeyboard.hierarchy.slavedIFrame.contentWindow.postMessage(JSON.stringify({"directive": "slave", "command": "sendKey", "key": character}), "*");
         } else {
             switch (character) {
-                case "Löschen":
+                case "←":
                     const afterDelete = (area.selectionStart !== area.selectionEnd) ? (textBeforeCursor + textAfterCursor) : (textBeforeCursor.slice(0, -1) + textAfterCursor);
                     area.value = afterDelete;
                     if (area.selectionStart !== area.selectionEnd) {
@@ -761,20 +753,24 @@ var integerInputTypes = {
         'number': '', 'range': '', 'tel': '', 'time': '', 'week': ''
     };
 
+var numpadClassNames = {
+    'blocklyHtmlInput': ''
+}
+
 function oskAction(clicked) {
-    if ((fxKeyboard.settings.numpadState === "disabled" ? document.activeElement.type in textInputTypes || document.activeElements.type in integerInputTypes : document.activeElement.type in textInputTypes)
+    if ((fxKeyboard.settings.numpadState === "always" ? document.activeElement.type in textInputTypes || document.activeElement.className in numpadClassNames : document.activeElement.className in numpadClassNames)
+        && fxKeyboard.lastPress !== "close" && fxKeyboard.settings.numpadState !== "disabled") {
+        fxKeyboard.focusElement = document.activeElement;
+        fxKeyboard.focusElementYTop = document.activeElement.getBoundingClientRect().top;
+        fxKeyboard.focusElementYBottom = document.activeElement.getBoundingClientRect().bottom;
+        fxKeyboard.activeOSK = fxKeyboard.inputTypes.numpad;
+        fxKeyboard._toggleOpen(true);
+    } else if ((fxKeyboard.settings.numpadState === "disabled" ? document.activeElement.type in textInputTypes || document.activeElements.type in integerInputTypes : document.activeElement.type in textInputTypes)
 			&& fxKeyboard.lastPress !== "close" && fxKeyboard.settings.numpadState !== "always") {
         fxKeyboard.focusElement = document.activeElement;
         fxKeyboard.focusElementYTop = document.activeElement.getBoundingClientRect().top;
         fxKeyboard.focusElementYBottom = document.activeElement.getBoundingClientRect().bottom;
         fxKeyboard.activeOSK = fxKeyboard.inputTypes.keyboard;
-        fxKeyboard._toggleOpen(true);
-    } else if ((fxKeyboard.settings.numpadState === "always" ? document.activeElement.type in textInputTypes || document.activeElements.type in integerInputTypes : document.activeElement.type in integerInputTypes) 
-			&& fxKeyboard.lastPress !== "close" && fxKeyboard.settings.numpadState !== "disabled") {
-        fxKeyboard.focusElement = document.activeElement;
-		fxKeyboard.focusElementYTop = document.activeElement.getBoundingClientRect().top;
-        fxKeyboard.focusElementYBottom = document.activeElement.getBoundingClientRect().bottom;
-        fxKeyboard.activeOSK = fxKeyboard.inputTypes.numpad;
         fxKeyboard._toggleOpen(true);
     } else {
         if (clicked.target.id.indexOf("fxkey") === -1) {
