@@ -134,7 +134,16 @@ FxKeyNumpad = JSON.stringify({
     "defaultFlex": "10",
     "main": [
         [
-            ["0"], ["1"], ["2"], ["3"], ["4"], ["5"], ["6"], ["7"], ["8"], ["9"], [{"label": "←", "special": 8, "type": "repeat"}]
+            ["7"], ["8"], ["9"]
+        ],
+        [
+            ["4"], ["5"], ["6"]
+        ],
+        [
+            ["1"], ["2"], ["3"]
+        ],
+        [
+            ["."], ["0"], [{"label": "←", "special": 8, "type": "repeat"}]
         ]
     ]
 });
@@ -228,8 +237,8 @@ var fxKeyboard = {
         padding: 8,
         kb_max_width: window.innerWidth,
         kb_max_height: window.innerWidth*0.30,
-        np_max_width: 1020,
-        np_max_height: 120,
+        np_max_width: 200,
+        np_max_height: 260,
 		key_height: window.innerWidth*0.05
     },
     
