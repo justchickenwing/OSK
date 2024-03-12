@@ -465,7 +465,7 @@ var fxKeyboard = {
                     }
                     break;
                 case "Enter":
-                    if (area.className in numpadClassNames) {
+                    if (area.className in numpadClassNames || area.id !== "codearea") {
                         fxKeyboard._toggleOpen(false);
                         fxKeyboard.lastPress = "close";
                         area.blur();
