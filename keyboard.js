@@ -246,7 +246,7 @@ var fxKeyboard = {
         kb_max_width: window.innerWidth,
         kb_max_height: window.innerWidth*0.30,
         np_max_width: 450,
-        np_max_height: 380,
+        np_max_height: 455,
 		key_height: window.innerWidth*0.05
     },
     
