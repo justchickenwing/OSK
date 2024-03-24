@@ -142,16 +142,16 @@ FxKeyNumpad = JSON.stringify({
     "defaultFlex": "10",
     "main": [
         [
-            ["7"], ["8"], ["9"], [{"label": "←", "flex": 15, "special": 8, "type": "repeat"}]
+            ["7"], ["8"], ["9"], [{"label": "←", "flex": 10, "special": 8, "type": "repeat"}]
         ],
         [
-            ["4"], ["5"], ["6"], [{"label": "Enter", "flex": 15, "string": "\t"}]
+            ["4"], ["5"], ["6"], [{"label": "Enter", "flex": 10, "string": "\t"}]
         ],
         [
-            ["1"], ["2"], ["3"], [{"label": ".", "flex": 15, "string": "."}]
+            ["1"], ["2"], ["3"], [{"label": "-", "flex": 10, "string": "-"}]
         ],
         [
-            [{"label": "0", "flex": 15, "string": "0"}]
+            ["0"], [{"label": ".", "flex": 10, "string": "."}]
         ]
     ]
 });
@@ -246,7 +246,7 @@ var fxKeyboard = {
         kb_max_width: window.innerWidth,
         kb_max_height: window.innerWidth*0.30,
         np_max_width: 450,
-        np_max_height: 455,
+        np_max_height: 462,
 		key_height: window.innerWidth*0.05
     },
     
@@ -344,6 +344,7 @@ var fxKeyboard = {
     activeOSK: null,
     
     _setSpecialFunctions: function(keyD,obj) {
+        const labels = [" ", ".", "-", "←", "Enter", "Tab"]
         keyD.onmousedown = function(){
             keyD.style.backgroundColor = "rgb(202,118,75)";
             keyD.style.color = "rgb(250,250,250)";
@@ -352,50 +353,29 @@ var fxKeyboard = {
         if (obj.label === "Shift") {
             keyD.onmouseup = function(){
                 if (fxKeyboard.state === 0) {
-                    console.log("0")
                     keyD.style.backgroundColor = "rgb(220,200,186)";
                     keyD.style.color = "rgb(202,118,75)";
                     fxKeyboard.state++;
                 } else if (fxKeyboard.state === 1) {
-                    console.log("1")
                     keyD.style.backgroundColor = "rgb(202,118,75)";
                     fxKeyboard.state++;
                 } else if (fxKeyboard.state === 2) {
-                    console.log("2")
                     keyD.style.backgroundColor = "rgb(200,200,200)";
                     keyD.style.color = "rgb(202,118,75)";
                     fxKeyboard.state = 0;
                 } 
                 fxKeyboard._setShift();
             };
-        } else if (obj.label === "←") {
+        } else if (labels.includes(obj.label)) {
             keyD.onmouseup = function () {
                 keyD.style.color = "rgb(202,118,75)";
-                fxKeyboard._sendKey(obj.label);
                 keyD.style.backgroundColor = "rgb(250,250,250)";
-            };
-        } else if (obj.label === ".") {
-            keyD.onmouseup = function () {
-                keyD.style.color = "rgb(202,118,75)";
                 fxKeyboard._sendKey(obj.label);
-                keyD.style.backgroundColor = "rgb(250,250,250)";
-            };
-        } else if (obj.label === "0") {
-            keyD.onmouseup = function () {
-                keyD.style.color = "rgb(202,118,75)";
-                fxKeyboard._sendKey(obj.label);
-                keyD.style.backgroundColor = "rgb(250,250,250)";
             };
         } else if (obj.label in {"@":"",".com":"",".au":""}) {
             keyD.onmouseup = function () {
                 keyD.style.color = "rgb(202,118,75)";
                 fxKeyboard._sendKey(obj.label);
-                keyD.style.backgroundColor = "rgb(250,250,250)";
-            };
-        } else if (obj.label === " ") {
-            keyD.onmouseup = function () {
-                fxKeyboard._sendKey(" ");
-                keyD.style.color = "rgb(202,118,75)";
                 keyD.style.backgroundColor = "rgb(250,250,250)";
             };
         } else if (obj.label === "Schliessen") {
@@ -404,19 +384,7 @@ var fxKeyboard = {
                 keyD.style.backgroundColor = "rgb(250,250,250)";
                 fxKeyboard.lastPress = "close";
             };
-        } else if (obj.label === "Enter") {
-            keyD.onmouseup = function () {
-                keyD.style.color = "rgb(202,118,75)";
-                keyD.style.backgroundColor = "rgb(250,250,250)";
-				fxKeyboard._sendKey(obj.label);
-            };
-        } else if (obj.label === "Tab") {
-			keyD.onmouseup = function () {
-				keyD.style.backgroundColor = "rgb(250,250,250)";
-                keyD.style.color = "rgb(202,118,75)";
-				fxKeyboard._sendKey(obj.label);
-			};
-		}
+        }
 			
         return keyD;
     },
@@ -465,7 +433,7 @@ var fxKeyboard = {
                     }
                     break;
                 case "Enter":
-                    if (area.className in numpadClassNames || area.id !== "codearea") {
+                    if (document.activeElement.className === "blocklyHtmlInput" || document.activeElement.className === "blocklyHtmlInput blocklyInvalidInput") {
                         fxKeyboard._toggleOpen(false);
                         fxKeyboard.lastPress = "close";
                         area.blur();
@@ -795,20 +763,16 @@ var integerInputTypes = {
         'number': '', 'range': '', 'tel': '', 'time': '', 'week': ''
     };
 
-var numpadClassNames = {
-    'blocklyHtmlInput': ''
-}
-
 function oskAction(clicked) {
-    if ((fxKeyboard.settings.numpadState === "always" ? document.activeElement.type in textInputTypes || document.activeElement.className in numpadClassNames : document.activeElement.className in numpadClassNames)
-        && fxKeyboard.lastPress !== "close" && fxKeyboard.settings.numpadState !== "disabled") {
+    console.log(document.activeElement.className)
+    if((document.activeElement.className === "blocklyHtmlInput" || document.activeElement.className === "blocklyHtmlInput blocklyInvalidInput")&& fxKeyboard.lastPress !== "close") {
+        console.log("is blockyl")
         fxKeyboard.focusElement = document.activeElement;
         fxKeyboard.focusElementYTop = document.activeElement.getBoundingClientRect().top;
         fxKeyboard.focusElementYBottom = document.activeElement.getBoundingClientRect().bottom;
         fxKeyboard.activeOSK = fxKeyboard.inputTypes.numpad;
         fxKeyboard._toggleOpen(true);
-    } else if ((fxKeyboard.settings.numpadState === "disabled" ? document.activeElement.type in textInputTypes || document.activeElements.type in integerInputTypes : document.activeElement.type in textInputTypes)
-			&& fxKeyboard.lastPress !== "close" && fxKeyboard.settings.numpadState !== "always") {
+    } else if(document.activeElement.type in textInputTypes && fxKeyboard.lastPress !== "close") {
         fxKeyboard.focusElement = document.activeElement;
         fxKeyboard.focusElementYTop = document.activeElement.getBoundingClientRect().top;
         fxKeyboard.focusElementYBottom = document.activeElement.getBoundingClientRect().bottom;
@@ -820,6 +784,29 @@ function oskAction(clicked) {
             fxKeyboard.lastPress = "null";
         }
     }
+    // if (
+    //     (fxKeyboard.settings.numpadState === "always" ? document.activeElement.type in textInputTypes || document.activeElement.className in numpadClassNames : document.activeElement.className in numpadClassNames)
+    //     && fxKeyboard.lastPress !== "close" && fxKeyboard.settings.numpadState !== "disabled") {
+    //     console.log("New KB")
+    //     console.log(fxKeyboard.activeOSK)
+    //     fxKeyboard.focusElement = document.activeElement;
+    //     fxKeyboard.focusElementYTop = document.activeElement.getBoundingClientRect().top;
+    //     fxKeyboard.focusElementYBottom = document.activeElement.getBoundingClientRect().bottom;
+    //     fxKeyboard.activeOSK = fxKeyboard.inputTypes.numpad;
+    //     fxKeyboard._toggleOpen(true);
+    // } else if ((fxKeyboard.settings.numpadState === "disabled" ? document.activeElement.type in textInputTypes || document.activeElements.type in integerInputTypes : document.activeElement.type in textInputTypes)
+	// 		&& fxKeyboard.lastPress !== "close" && fxKeyboard.settings.numpadState !== "always") {
+    //     fxKeyboard.focusElement = document.activeElement;
+    //     fxKeyboard.focusElementYTop = document.activeElement.getBoundingClientRect().top;
+    //     fxKeyboard.focusElementYBottom = document.activeElement.getBoundingClientRect().bottom;
+    //     fxKeyboard.activeOSK = fxKeyboard.inputTypes.keyboard;
+    //     fxKeyboard._toggleOpen(true);
+    // } else {
+    //     if (clicked.target.id.indexOf("fxkey") === -1) {
+    //         fxKeyboard._toggleOpen(false);
+    //         fxKeyboard.lastPress = "null";
+    //     }
+    // }
 }
 
 document.addEventListener("dragstart", function load(clicked) {
