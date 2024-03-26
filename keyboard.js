@@ -142,16 +142,16 @@ FxKeyNumpad = JSON.stringify({
     "defaultFlex": "10",
     "main": [
         [
-            ["7"], ["8"], ["9"], [{"label": "←", "flex": 10, "special": 8, "type": "repeat"}]
+            ["7"], ["8"], ["9"], [{"label": "←", "special": 8, "type": "repeat"}]
         ],
         [
-            ["4"], ["5"], ["6"], [{"label": "Enter", "flex": 10, "string": "\t"}]
+            ["4"], ["5"], ["6"], [{"label": "-", "string": "-"}]
         ],
         [
-            ["1"], ["2"], ["3"], [{"label": "-", "flex": 10, "string": "-"}]
+            ["1"], ["2"], ["3"], [{"label": "Enter", "string": "\t"}]
         ],
         [
-            ["0"], [{"label": ".", "flex": 10, "string": "."}]
+            [{"label": "0", "flex": 10, "string": "0"}], [{"label": ".", "string": "."}]
         ]
     ]
 });
@@ -246,7 +246,7 @@ var fxKeyboard = {
         kb_max_width: window.innerWidth,
         kb_max_height: window.innerWidth*0.30,
         np_max_width: 450,
-        np_max_height: 462,
+        np_max_height: 466,
 		key_height: window.innerWidth*0.05
     },
     
@@ -344,7 +344,7 @@ var fxKeyboard = {
     activeOSK: null,
     
     _setSpecialFunctions: function(keyD,obj) {
-        const labels = [" ", ".", "-", "←", "Enter", "Tab"]
+        const labels = ["0", " ", ".", "-", "←", "Enter", "Tab"]
         keyD.onmousedown = function(){
             keyD.style.backgroundColor = "rgb(202,118,75)";
             keyD.style.color = "rgb(250,250,250)";
@@ -470,6 +470,9 @@ var fxKeyboard = {
     
     _buildKey: function (char,primary) {
         var key = document.createElement("div");
+        if ((document.activeElement.className === "blocklyHtmlInput" || document.activeElement.className === "blocklyHtmlInput blocklyInvalidInput")&& fxKeyboard.lastPress !== "close") {
+            key.className = "customskey";
+        }
         key.style.width = this.settings.key_height*this.settings.scale + "px";
         key.style.height = this.settings.key_height*this.settings.scale + "px";
         key.style.margin = this.settings.padding*(this.settings.scale/2) + "px";
@@ -510,6 +513,9 @@ var fxKeyboard = {
 	
 	_buildKeyFlex: function (char,primary,flex) {
         var key = document.createElement("div");
+        if ((document.activeElement.className === "blocklyHtmlInput" || document.activeElement.className === "blocklyHtmlInput blocklyInvalidInput")&& fxKeyboard.lastPress !== "close") {
+            key.className = "customskey";
+        }
         key.style.width = this.settings.key_height*this.settings.scale + "px";
         key.style.height = this.settings.key_height*this.settings.scale + "px";
         key.style.margin = this.settings.padding*(this.settings.scale/2) + "px";
@@ -551,6 +557,9 @@ var fxKeyboard = {
     
     _buildSpecialKey: function (obj) {
         var key = document.createElement("div");
+        if ((document.activeElement.className === "blocklyHtmlInput" || document.activeElement.className === "blocklyHtmlInput blocklyInvalidInput")&& fxKeyboard.lastPress !== "close") {
+            key.className = "customspecialkey";
+        }
         key.style.width = this.settings.key_height*this.settings.scale + "px";
         key.style.height = this.settings.key_height*this.settings.scale + "px";
         key.style.margin = this.settings.padding*(this.settings.scale/2) + "px";
@@ -618,6 +627,7 @@ var fxKeyboard = {
             }
             for (var row in keys.main) {
                 var nrow = document.createElement("div");
+                // nrow.style.display = "inline"
                 nrow.style.display = "flex";
                 nrow.style.justifyContent = "center";
                 nrow.id = inputType+'-r';
